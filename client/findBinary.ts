@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import * as path from "node:path";
+import { env } from "node:process";
 import { Uri, workspace } from "vscode";
 import { validateSafeBinaryPath } from "./PathValidator";
 
@@ -219,6 +220,45 @@ export async function searchGlobalNodeModulesBin(
     );
     return { path: resolvedPath, loader: "node" };
   } catch {}
+}
+
+/**
+ * Search for the binary in the PATH.
+ * Returns undefined if not found.
+ */
+export async function searchPath(
+  defaultBinaryName: string,
+): Promise<BinarySearchResult | undefined> {
+  const envPath = env.PATH;
+
+  if (!envPath) {
+    return undefined;
+  }
+
+  // generate candidate paths by joining each PATH entry with the binary name
+  // on Windows, also consider the .exe extension
+  const candidates = envPath.split(path.delimiter).flatMap((folder) => {
+    // filter out empty entries which can occur if PATH starts or ends with a delimiter
+    if (!folder) {
+      return [];
+    }
+    const basePath = path.join(folder, defaultBinaryName);
+    return process.platform === "win32" ? [basePath, `${basePath}.exe`] : [basePath];
+  });
+
+  const binary = await Promise.all(
+    candidates.map(async (candidate) => {
+      const candidateUri = Uri.file(candidate);
+      try {
+        await workspace.fs.stat(candidateUri);
+        return { path: candidateUri.fsPath, loader: "native" } as const;
+      } catch {
+        return undefined;
+      }
+    }),
+  );
+
+  return binary.find(Boolean);
 }
 
 /**
