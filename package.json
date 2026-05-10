@@ -249,6 +249,35 @@
           "deprecated": true,
           "markdownDeprecationMessage": "deprecated since 1.25.0, use `oxc.fixKind` or `oxc.disableNestedConfig` instead."
         },
+        "oxc.lint.customization": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "scope": "resource",
+          "default": null,
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "autofix": {
+                "type": "boolean",
+                "markdownDescription": "Whether autofix should be enabled for this rule."
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "warning",
+                  "info",
+                  "hint",
+                  "off"
+                ],
+                "markdownDescription": "Diagnostic severity override for this rule."
+              }
+            }
+          },
+          "markdownDescription": "Customizes linting rules behavior. See https://oxc.rs/docs/guide/usage/linter/lsp-config-reference.html#rulescustomization for details."
+        },
         "oxc.fmt.experimental": {
           "type": "boolean",
           "scope": "resource",
