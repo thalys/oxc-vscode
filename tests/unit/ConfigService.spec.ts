@@ -46,12 +46,20 @@ suite("ConfigService", () => {
   suite("getOxfmtServerBinPath", () => {
     test("falls back to node resolving when server path is not set", async () => {
       const service = new ConfigService();
-      const oxfmtPath = (await service.getOxfmtServerBinPath())!;
       const cwd = process.env.VSCODE_CWD!.replace(`${sep}editors${sep}vscode`, "");
+      let oxfmtPath = (await service.getOxfmtServerBinPath())!;
+      // on windows, uppercase the driver letter for consistent path comparison
+      if (process.platform === "win32") {
+        oxfmtPath.path = oxfmtPath.path[0].toUpperCase() + oxfmtPath.path.slice(1);
+      }
 
       // it targets the oxc project's oxlint/bin/oxlint path
       strictEqual(oxfmtPath.loader, "node");
-      strictEqual(oxfmtPath.path.startsWith(cwd), true, "path should start with cwd");
+      strictEqual(
+        oxfmtPath.path.startsWith(cwd),
+        true,
+        `path should start with cwd, cwd: ${cwd}, actual: ${oxfmtPath.path}`,
+      );
       strictEqual(
         oxfmtPath.path.endsWith(`oxfmt${sep}bin${sep}oxfmt`),
         true,
@@ -115,12 +123,19 @@ suite("ConfigService", () => {
   suite("getOxlintServerBinPath", () => {
     test("falls back to node resolving when server path is not set", async () => {
       const service = new ConfigService();
-      const oxlintPath = (await service.getOxlintServerBinPath())!;
       const cwd = process.env.VSCODE_CWD!.replace(`${sep}editors${sep}vscode`, "");
-
+      let oxlintPath = (await service.getOxlintServerBinPath())!;
+      // on windows, uppercase the driver letter for consistent path comparison
+      if (process.platform === "win32") {
+        oxlintPath.path = oxlintPath.path[0].toUpperCase() + oxlintPath.path.slice(1);
+      }
       // it targets the oxc project's oxlint/bin/oxlint path
       strictEqual(oxlintPath.loader, "node");
-      strictEqual(oxlintPath.path.startsWith(cwd), true, "path should start with cwd");
+      strictEqual(
+        oxlintPath.path.startsWith(cwd),
+        true,
+        `path should start with cwd, cwd: ${cwd}, actual: ${oxlintPath.path}`,
+      );
       strictEqual(
         oxlintPath.path.endsWith(`oxlint${sep}bin${sep}oxlint`),
         true,
