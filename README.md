@@ -30,11 +30,11 @@ This is the formatter for Oxc. The currently supported features are listed below
 
 To enable it as your default formatter, use a VS Code `settings.json` like:
 
-```json
+```jsonc
 {
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file" // tell oxfmt to format the whole file, not only the modified lines
+  "editor.formatOnSaveMode": "file", // tell oxfmt to format the whole file, not only the modified lines
   // Or enable it for specific file types:
   // "[javascript]": {
   //   "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -44,24 +44,24 @@ To enable it as your default formatter, use a VS Code `settings.json` like:
 
 To run Oxc formatting through VS Code code actions on save, configure `editor.codeActionsOnSave`:
 
-```json
+```jsonc
 {
   "editor.codeActionsOnSave": {
-    "source.format.oxc": "always"
-  }
+    "source.format.oxc": "always",
+  },
 }
 ```
 
 Running formatting as a code action on save, allows to define the order of changes when both formatting and lint fixes are applied on save. For example, the below configuration will run the formatter first, and then apply lint fixes:
 
-```json
+```jsonc
 {
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": false, // disable default behavior
   "editor.codeActionsOnSave": {
     "source.format.oxc": "always", // run formatter first
-    "source.fixAll.oxc": "always" // run lint fixes after
-  }
+    "source.fixAll.oxc": "always", // run lint fixes after
+  },
 }
 ```
 
@@ -98,7 +98,7 @@ Following configurations are supported via `settings.json` and can be changed fo
 | `oxc.disableNestedConfig`     | `false`       | `true` \| `false`                                                                                             | Disable searching for nested configuration files. When set to true, only the configuration file specified in `oxc.configPath` (if any) will be used.                                                                                   |
 | `oxc.fixKind`                 | `null`        | `safe_fix` \| `safe_fix_or_suggestion` \| `dangerous_fix` \| `dangerous_fix_or_suggestion` \| `none` \| `all` | Specify the kind of fixes to suggest/apply.                                                                                                                                                                                            |
 | `oxc.fmt.configPath`          | `null`        | `<string>` \| `<null>`                                                                                        | Path to an oxfmt configuration file                                                                                                                                                                                                    |
-| `oxc.lint.customization`      | `null`        | `Record<string, object>` \| `<null>`                                                                          | Customizes linting rules behavior. See https://oxc.rs/docs/guide/usage/linter/lsp-config-reference.html#rulescustomization for details.                                                                                                |
+| `oxc.lint.customization`      | `null`        | `Record<string, object>` \| `<null>`                                                                          | Customizes linting rules behavior. See <https://oxc.rs/docs/guide/usage/linter/lsp-config-reference.html#rulescustomization> for details.                                                                                              |
 | `oxc.lint.run`                | `onType`      | `onSave` \| `onType`                                                                                          | Run the linter on save (onSave) or on type (onType)                                                                                                                                                                                    |
 | `oxc.requireConfig`           | `false`       | `true` \| `false`                                                                                             | Start the language server only when a `.oxlintrc.json(c)` or `oxlint.config.ts` file exists in one of the workspaces.                                                                                                                  |
 | `oxc.tsConfigPath`            | `null`        | `<string>` \| `<null>`                                                                                        | Path to the project's TypeScript config file. If your `tsconfig.json` is not at the root, you will need this set for the `import` plugin rules to resolve imports correctly.                                                           |
